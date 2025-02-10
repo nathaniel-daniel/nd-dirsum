@@ -17,6 +17,8 @@ nd-dirsum <path>
  * Paths must be unicode
  * Symlinks are not supported
  * Cannot skip files or directories
+ * Hashes are not cross-platform
+ * Does not take into account file metadata
  
 ## License
 Licensed under either of
