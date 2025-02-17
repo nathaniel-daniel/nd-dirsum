@@ -13,7 +13,7 @@ const FILE_MARKER: u8 = 0x01;
 #[derive(Debug, argh::FromArgs)]
 #[argh(description = "generate a sum for a directory")]
 struct Options {
-    #[argh(positional)]
+    #[argh(positional, default = "PathBuf::from(\".\")")]
     path: PathBuf,
 }
 
@@ -91,10 +91,14 @@ fn main() -> anyhow::Result<()> {
 }
 
 fn hash_path(hasher: &mut Sha256, path: &Path) -> anyhow::Result<()> {
-    let path = path
-        .to_str()
-        .context("non-unicode paths are currently not supported")?;
-    hasher.update(path);
+    for component in path.components() {
+        let component = component
+            .as_os_str()
+            .to_str()
+            .context("non-unicode paths are currently not supported")?;
+        hasher.update([0x00]);
+        hasher.update(component);
+    }
 
     Ok(())
 }
